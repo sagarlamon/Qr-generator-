@@ -4,6 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>QR Generator</title>
+
+  <!-- PWA: Icons & Theme -->
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f5f4f0" id="theme-color-meta">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="QR Generator">
+  <meta name="application-name" content="QR Generator">
+  <meta name="description" content="Turn any link into a scannable QR code.">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -449,6 +461,11 @@
   </footer>
 
   <script>
+    // ── Service Worker (PWA install support) ─────────────────────────────
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+
     let currentQR = null;
     let isDark = false;
 
@@ -457,6 +474,8 @@
       document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
       document.getElementById('theme-label').textContent = isDark ? 'Dark' : 'Light';
       document.getElementById('toggle-icon').textContent = isDark ? '🌙' : '☀️';
+      // Keep browser chrome / PWA title-bar colour in sync
+      document.getElementById('theme-color-meta').content = isDark ? '#111110' : '#f5f4f0';
 
       // Re-render QR if visible with correct colors
       const section = document.getElementById('qr-section');
